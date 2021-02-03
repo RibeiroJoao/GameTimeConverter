@@ -1,3 +1,4 @@
+package com.company.gametimeconverter;
 
 /**
  * @Author Joao Peixe Ribeiro
@@ -5,15 +6,11 @@
 public class GameTimeConverter {
 
     public static void main(String[] args) {
-        if (areArgsAsExpected(args)) {
+        //TODO clarify requirements: How many args should be accepted?
+        if (args.length == 1) {
             giveOutputToUser(new RibeiroGameTimeConverter().convertGameTime(getInput(args[0])));
         }
-        System.out.println("USAGE: java -jar GameTimeConverter \"<your-game-time>\"");
-    }
-
-    //TODO clarify requirements: How many args should be accepted?
-    private static boolean areArgsAsExpected(String[] args) {
-        return args.length == 1 && args[0].startsWith("\"") && args[0].endsWith("\"");
+        System.err.println("USAGE: java -jar GameTimeConverter \"<your-game-time>\"");
     }
 
     private static String getInput(String arg) {
