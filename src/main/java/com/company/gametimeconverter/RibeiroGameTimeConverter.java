@@ -9,6 +9,12 @@ package com.company.gametimeconverter;
 public class RibeiroGameTimeConverter {
     private static final String REGEX_TO_VALIDATE = "(\\[)(" + Periods.toStringRegex() + ")(\\])( )(\\d{1,2}:[0-5][0-9]\\.\\d{3})";
 
+    /**
+     * Apply function. Converts given gameTime into wanted format.
+     *
+     * @param inputGameTime given by user.
+     * @return game time in wanted format. "INVALID" if input does not follow wanted regex.
+     */
     public String convertGameTime(String inputGameTime) {
         if (validFormat(inputGameTime)) {
             return translateValidatedGameTime(inputGameTime);
@@ -21,32 +27,35 @@ public class RibeiroGameTimeConverter {
     }
 
     private String translateValidatedGameTime(String inputGameTime) {
-        String shortPeriod = inputGameTime.substring(1, 3);
+        Periods shortPeriod = Periods.getPeriodFromString(inputGameTime.substring(1, 3));
         String inputTime = inputGameTime.substring(4).replaceFirst(" ", "");
         int minutes = getMinutes(inputTime.substring(0, inputTime.indexOf(':')));
+        int seconds = getSeconds(inputGameTime.substring(inputGameTime.indexOf(':') + 1));
         String completeTime;
 
-        if (isOverTime(Periods.getPeriodFromString(shortPeriod), minutes)) {
-            if (shortPeriod.equals(Periods.H1.toString())) {
-                completeTime = checkOverTimeAndGetCompleteTime(45, minutes, inputTime);
+        if (isOverTime(shortPeriod, minutes)) {
+            if (shortPeriod == Periods.H1) {
+                completeTime = checkOverTimeAndGetCompleteTime(45, minutes, seconds);
             } else {
-                completeTime = checkOverTimeAndGetCompleteTime(90, minutes, inputTime);
+                completeTime = checkOverTimeAndGetCompleteTime(90, minutes, seconds);
             }
         } else {
-            completeTime = getTime(inputTime);
+            completeTime = getTimeAsOutput(minutes, seconds);
         }
 
-        return (completeTime + " - " + getLongPeriod(shortPeriod));
+        return (completeTime + " - " + shortPeriod.getLongPeriod());
     }
 
-    private String checkOverTimeAndGetCompleteTime(int minuteMarker, int minutes, String inputTime) {
-        int seconds = getSeconds(inputTime.substring(inputTime.indexOf(':') + 1));
-
-        return minuteMarker + ":00 +" + String.format("%02d", (minutes - minuteMarker)) + ":" + String.format("%02d", seconds);
+    private int getMinutes(String inputMinutes) {
+        return Integer.parseInt(inputMinutes);
     }
 
-    // Checks overTime in order to print extended time "+XX:XX"
+    private int getSeconds(String inputSeconds) {
+        return (int) Math.round(Double.parseDouble(inputSeconds.replace(" ", "")));
+    }
+
     private boolean isOverTime(Periods period, int minutes) {
+        // Checks overTime in order to print extended time "+XX:XX" or not
         boolean isOverTime = false;
 
         if (minutes >= 45 && (period == Periods.H1)) {
@@ -58,22 +67,11 @@ public class RibeiroGameTimeConverter {
         return isOverTime;
     }
 
-    private String getTime(String gameTime) {
-        int minutes = getMinutes(gameTime.substring(0, gameTime.indexOf(':')));
-        int seconds = getSeconds(gameTime.substring(gameTime.indexOf(':') + 1));
+    private String checkOverTimeAndGetCompleteTime(int minuteMarker, int minutes, int seconds) {
+        return minuteMarker + ":00 +" + getTimeAsOutput((minutes - minuteMarker), seconds);
+    }
 
+    private String getTimeAsOutput(int minutes, int seconds) {
         return String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
-    }
-
-    private int getSeconds(String inputSeconds) {
-        return (int) Math.round(Double.parseDouble(inputSeconds.replace(" ", "")));
-    }
-
-    private int getMinutes(String inputMinutes) {
-        return Integer.parseInt(inputMinutes);
-    }
-
-    private String getLongPeriod(String shortPeriod) {
-        return Periods.of(shortPeriod);
     }
 }

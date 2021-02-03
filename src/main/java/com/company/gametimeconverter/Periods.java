@@ -1,7 +1,8 @@
 package com.company.gametimeconverter;
 
 /**
- * Beware that the short Periods length is expected to be 2, in GameTimeConverterApplication.extractLongPeriod().
+ * Represents all possible Periods. Contains methods that handle Periods.
+ * Beware that the short Periods length is expected to be 2.
  *
  * @Author Joao Peixe Ribeiro
  */
@@ -14,17 +15,8 @@ enum Periods {
         this.longPeriod = longPeriod;
     }
 
-    private String getLongPeriod() {
+    String getLongPeriod() {
         return this.longPeriod;
-    }
-
-    static String of(String shortPeriod) {
-        for (Periods period : Periods.values()) {
-            if (period.toString().equals(shortPeriod)) {
-                return period.getLongPeriod();
-            }
-        }
-        return null;
     }
 
     static Periods getPeriodFromString(String shortPeriod) {

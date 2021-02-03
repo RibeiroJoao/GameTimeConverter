@@ -22,6 +22,14 @@ public class RibeiroGameTimeConverterTest {
     }
 
     @Test
+    public void testTranslate_checkEnumsWithContent() {
+        //TODO clarify requirements: Must I verify these?
+        assertNotEquals("00:00 - PRE_MATCH", dateConverter.convertGameTime("[PM] 1:00.000"));
+        assertNotEquals("45:00 +00:00 - HALF_TIME", dateConverter.convertGameTime("[HT] 45:10.000"));
+        assertNotEquals("90:00 +00:00 - FULL_TIME", dateConverter.convertGameTime("[FT] 90:10.000"));
+    }
+
+    @Test
     public void testTranslate_pmZero_success() {
         assertEquals("00:00 - PRE_MATCH", dateConverter.convertGameTime("[PM] 0:00.000"));
     }

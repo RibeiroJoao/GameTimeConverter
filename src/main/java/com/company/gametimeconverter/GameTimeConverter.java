@@ -6,15 +6,10 @@ package com.company.gametimeconverter;
 public class GameTimeConverter {
 
     public static void main(String[] args) {
-        //TODO clarify requirements: How many args should be accepted?
         if (args.length == 1) {
-            giveOutputToUser(new RibeiroGameTimeConverter().convertGameTime(getInput(args[0])));
+            giveOutputToUser(new RibeiroGameTimeConverter().convertGameTime(args[0]));
         }
-        System.err.println("USAGE: java -jar GameTimeConverter \"<your-game-time>\"");
-    }
-
-    private static String getInput(String arg) {
-        return arg.replaceAll("\"", "");
+        System.err.println("USAGE: java -jar GameTimeConverter \"your-game-time\"");
     }
 
     private static void giveOutputToUser(String outputGameTime) {
